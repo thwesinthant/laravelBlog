@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reply;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreReplyRequest;
 use App\Http\Requests\UpdateReplyRequest;
 
@@ -27,10 +29,32 @@ class ReplyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreReplyRequest $request)
+
+
+    public function store(Request $request)
     {
-        //
+        dd($request->reply_id);
+        $request->validate(
+            [
+                "comment" => 'required',
+                "user_id" => 'required',
+                "post_id" => 'required',
+                "reply_id" => 'required',
+            ]
+        );
+
+        if ($request->reply_id > 0) {
+            $newReply = ([
+                'comment' => $request['comment'],
+                'user_id' => $request['user_id'],
+                'post_id' => $request['post_id'],
+                'reply_id' => $request['reply_id']
+            ]);
+            Reply::create($newReply);
+        }
+        return redirect()->back();
     }
+
 
     /**
      * Display the specified resource.

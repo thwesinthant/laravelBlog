@@ -3,18 +3,19 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Str;
 use App\Models\Category;
 use App\Models\Comment;
-
+use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Bookworm\Bookworm;
+
 
 class Post extends Model
 {
     protected $guarded = [];
     use HasFactory;
-
-    protected $fillable = ['title', 'body', 'photo', 'category_id'];
 
     public function user()
     {
@@ -27,5 +28,11 @@ class Post extends Model
     public function comment()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function humanReadTime($body)
+    {
+        $time = Bookworm::estimate($body);
+        echo $time;
     }
 }

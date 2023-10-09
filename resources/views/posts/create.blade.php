@@ -28,6 +28,7 @@
 
 
         <div class="mb-6">
+            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
 
             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload
                 Photo</label>

@@ -7,6 +7,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FavouriteController;
+use App\Http\Controllers\ReplyController;
+use Bookworm\Bookworm;
 
 use Illuminate\Support\Facades\Route;
 
@@ -31,11 +34,21 @@ Route::resource("posts", PostController::class);
 Route::resource("categories", CategoryController::class);
 // comment route
 Route::resource("comments", CommentController::class);
+// comment route
+Route::resource("replies", ReplyController::class);
+// favourite route
+Route::resource("favourites", FavouriteController::class);
 // user route
 Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
 
+Route::get('/text', function () {
 
 
+
+    $text = ' ';
+    $time = Bookworm::estimate($text);
+    echo $time; // 5 minutes
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

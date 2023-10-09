@@ -36,21 +36,24 @@
             </div>
             <div class="content me-16">
                 <div class="title mb-8 ">
-                    <span class=" text-3xl  font-bold "
+
+                    <p class=" text-3xl  font-bold "
                         style="font-family: 'Chewy',  cursive;
                 background: #FFFFFF;
                 background: linear-gradient(to left, #FFFFFF 0%, #FF0000 100%);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 ">
-                        {{ $post->title }}</span>
+                        {{ $post->title }}</p>
 
 
                     {{-- <button type="button"
                     class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br  text-xs rounded-xl px-2.5 py-1 ms-4">Jun
                     4, 2024</button> --}}
                     <span class="text-red-500 ms-2"><i class="fa-solid fa-tags text-white me-1"></i>
-                        {{ $post->category->name }}</span>
+                        {{ $post->category->name }} | </span>
+
+                    <span class="text-white">{{ $post->humanReadTime($post->body) }} read</span>
                     {{-- <button type="button"
                         class=" bg-white text-red-500  rounded-md  px-1.5 ms-2  text-center font-bold"
                         style="font-family: 'Chewy',  cursive;font-size:0.87rem;padding:2px 8px;">
@@ -103,11 +106,17 @@
                 </a>
                 <span class="me-8 ms-1 text-white">1</span>
             </div> --}}
-                <button type="submit"
-                    class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium text-sm rounded-2xl px-2.5 pt-0 pb-1 ms-4 mt-3 whitespace-nowrap">Add
-                    to Read Later<span class="material-symbols-outlined ms-1 text-white text-base">
-                        bookmark_add
-                    </span></button>
+                <form action="{{ route('favourites.store') }}" method="post">
+                    @csrf
+                    <button type="submit"
+                        class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium text-sm rounded-2xl px-2.5 pt-0 pb-1 ms-4 mt-3 whitespace-nowrap">Add
+                        to Read Later<span class="material-symbols-outlined ms-1 text-white text-base">
+                            bookmark_add
+                        </span></button>
+                    <input type="hidden" name="user_id" value="{{ Auth::user()->id ?? '' }}">
+                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+
+                </form>
                 {{-- <a href="#" class="whitespace-nowrap text-white underline mt-10"><span
                     class="material-symbols-outlined  ms-1 text-red-500 ">
                     bookmark_add

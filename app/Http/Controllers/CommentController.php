@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Reply;
+
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use Illuminate\Http\Request;
@@ -12,62 +14,33 @@ use function PHPUnit\Framework\isNull;
 
 class CommentController extends Controller
 {
-
-
     public function store(Request $request)
     {
         $request->validate(
             [
-                "comment" => 'required',
+                "message" => 'required',
                 "user_id" => 'required',
                 "post_id" => 'required',
+                "main_comment_id" => 'required',
             ]
         );
 
-        $newComment = ([
-            'comment' => $request['comment'],
-            'user_id' => $request['user_id'],
-            'post_id' => $request['post_id'],
-            // 'ordering_secondary' => $request['ordering_secondary'],
-        ]);
-
-        $idd = $request->post_id;
-        // dd($idd);
-
-        $commentTable =
-            Comment::where('post_id', $idd)->get();
-        // dd($commentTable);
-
-        foreach ($commentTable as $comment) {
-
-            if ($request->reply_id > 0) {
-                $parent_ordering = DB::table('comments')->where('id', $request->reply_id)->value('ordering');
-
-                $newComment['ordering'] =
-                    $parent_ordering;
-
-                $fetch_sameOrdering =
-                    DB::table('comments')->where('ordering', $parent_ordering)->get();
-                $rowCount_of_sameordering = $fetch_sameOrdering->count();
-                // dd($rowCount_of_sameordering);
-
-                $newComment['ordering_secondary'] = $rowCount_of_sameordering;
-            } else {
-                $newComment['ordering'] = ++$comment->ordering;
-                // $newComment['ordering'] = 0;
-                $newComment['ordering_secondary'] = 0;
-            }
-
-            // dd($comment->ordering);
+        if ($request->main_comment_id == 0) {
+            $newComment = ([
+                'comment' => $request['message'],
+                'user_id' => $request['user_id'],
+                'post_id' => $request['post_id'],
+                'reply_id' => $request['main_comment_id'],
+            ]);
+            Comment::create($newComment);
+        } else {
+            $newReply = ([
+                'reply' => $request['message'],
+                'comment_id' => $request['main_comment_id'],
+                'user_id' => $request['user_id'],
+            ]);
+            Reply::create($newReply);
         }
-        // }
-
-
-        // add +1 to ordering secondary if reply_id exists
-
-
-        Comment::create($newComment);
-
         return redirect()->back();
     }
 
@@ -99,17 +72,3 @@ class CommentController extends Controller
         //
     }
 }
-
-
-
-
-// if ($request->reply_id === "0") {
-//     if ($comment->ordering >= 0) {
-//         $newComment['ordering'] = ++$comment->ordering;
-//     }
-// } else {
-//     dd($comment->id);
-//     if ($comment->id === $request->reply_id) {
-//         $newComment['ordering'] = $comment->ordering;
-//     }
-// }

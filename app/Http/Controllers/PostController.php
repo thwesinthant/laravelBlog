@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Reply;
+
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Category;
@@ -36,7 +38,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request,)
     {
         // return $request;
         $request->validate(
@@ -47,7 +49,9 @@ class PostController extends Controller
                 "photo" => 'required|mimes:png,jpeg,jpg,webp,svg',
             ]
         );
+        $newPost['user_id'] = $request->user_id;
         $newPost = $request->all();
+        // return $newPost;
         if ($img = $request->file('photo')) {
             $path = "postPhoto/";
             $ext = Date('YmdHis') . "." . $img->getClientOriginalExtension();
@@ -66,13 +70,9 @@ class PostController extends Controller
     {
         $categories = Category::all();
         $comments = Comment::all();
+        $replies = Reply::all();
 
-        // $fetchReply = DB::table('comments')->where('ordering', '1')
-        //     ->where('ordering_secondary', '>', '0')
-        //     ->get();
-        // return $fetchReply;
-
-        return view("posts.show", compact('post', 'categories', 'comments'));
+        return view("posts.show", compact('post', 'categories', 'comments', 'replies'));
     }
 
     /**

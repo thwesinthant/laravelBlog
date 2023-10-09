@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Comment;
+use App\Models\Reply;
+
 use Illuminate\Support\Str;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -81,5 +83,18 @@ class User extends Authenticatable
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    // Delete all posts associated with this user
+    public function delete()
+    {
+        $this->posts()->delete();
+
+        // Delete the user
+        return parent::delete();
     }
 }
